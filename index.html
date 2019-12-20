@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+    <meta name="robots" content="noindex">
+	<title>Bookkeeping</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+	<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-firestore.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#config-web-app -->
+     <script src="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.js"></script>
+     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.css" />
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCznZ1m1lJfKfJ0--aGAWxxRlVfy2ESjaM",
+    authDomain: "bookkeeping-4796d.firebaseapp.com",
+    databaseURL: "https://bookkeeping-4796d.firebaseio.com",
+    projectId: "bookkeeping-4796d",
+    storageBucket: "",
+    messagingSenderId: "653959470717",
+    appId: "1:653959470717:web:56b76c1bca0bb62c"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  var db = firebase.firestore();
+
+</script>
+
+<div id="vue">
+    <ul>
+        <li v-for="(entry, index) in entries">
+            <div>
+                <input v-model="entry.debitAccount" @click="resetDebit(index)" list="accounts" placeholder="借方科目">
+                <input v-model.number="entry.debitAmount" @change="syncCredit(index)" type="number">
+            </div>
+            <div>
+                <input v-model="entry.creditAccount" @click="resetCredit(index)" list="accounts" placeholder="貸方科目">
+                <input v-model.number="entry.creditAmount" @change="syncDebit(index)" type="number">
+            </div>
+        </li>
+    </ul>
+    <button @click="add" style="width:40px;height:40px;border-radius:100px">+</button>
+    <textarea v-model="summary" placeholder="摘要"></textarea>
+    <button @click.prevent="submit">SUBMIT</button>
+</div>
+<datalist id="accounts"></datalist>
+<div id="log"></div>
+<div id="date">
+<form @submit.prevent="getTrialBalance">
+    <input type="date" v-model="from">から<input type="date" v-model="to">までを<input type="submit" value="表示">
+</form>
+<ul>
+    <li v-for="e in computedBalance">
+        <p>{{ e[0] }}: {{ e[1] }}</p>
+    </li>
+</ul>
+</div>
+<div id="firebaseui-auth-container" style="display:none"></div>
+<script src="script.js"></script>
+</body>
+</html>
