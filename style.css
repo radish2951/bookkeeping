@@ -7,9 +7,14 @@ input {
   height: 42px;
 }
 
+textarea {
+  width: 100%;
+}
+
 input, textarea {
   font-size: 14px;
   border: none;
+  box-sizing: border-box;
 }
 button {
   display: block;
@@ -23,23 +28,51 @@ button {
 }
 
 #log > div {
+  font-size: 13px;
   display: flex;
   justify-content: space-between;
-  margin: 10px 0;
+  flex-wrap: wrap;
+  padding: 4px 0;
   border-bottom: 1px solid gray;
 }
 
+#log > div.date {
+  justify-content: center;
+  padding-top: 28px;
+  padding-bottom: 8px;
+}
+
 #log div table {
-  width: 40%;
+  width: 41%;
+  /*
+  border: 1px solid black;
+  */
 }
 
 #log div table tr td {
+  text-align: left;
+  overflow-wrap: normal;
+}
+
+#log div table tr td:nth-child(2) {
   text-align: right;
-  width: 50%;
 }
 
 #log div div {
   margin-right: 20px;
+}
+
+#log div div.summary {
+  margin: 0 0 0 28px;
+  width: 100%;
+  font-size: 11px;
+}
+
+#vue {
+  position: sticky;
+  bottom: 0;
+  padding: 24px 0;
+  background: lightblue;
 }
 
 #vue ul {

@@ -28,14 +28,14 @@ async function setAccounts() {
     })
 }
 
-async function getData() {
+async function getData(days) {
 
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    today.setDate(today.getDate() - 1)
+    const past = new Date()
+    past.setHours(0, 0, 0, 0)
+    past.setDate(past.getDate() - days)
 
-    const querySnapshot = await db.collection("transactions").orderBy("timestamp", "desc").endAt(today).get()
-    return querySnapshot.docs.map(doc => doc.data());
+    const querySnapshot = await db.collection("transactions").orderBy("timestamp", "desc").endAt(past).get()
+    return querySnapshot.docs.map(doc => doc.data())
 
 }
 
@@ -64,34 +64,52 @@ function createDataContainer(d) {
     })
 
     const date = d.timestamp.toDate()
-    const year = date.getFullYear()
-    const month = date.getMonth()
-    const day = date.getDate()
     const hours = date.getHours().toString().padStart(2, "0")
     const minutes = date.getMinutes().toString().padStart(2, "0")
 
-    const dateText = /*${year}年${month}月${day}日*/ `${hours}:${minutes}`
-
     const dateDiv = document.createElement("div")
-    dateDiv.innerText = dateText
+    dateDiv.innerText = `${hours}:${minutes}`
+
+    const summary = d.summary
+    const summaryDiv = document.createElement("div")
+    summaryDiv.classList.add("summary")
+    summaryDiv.innerText = summary
 
     const container = document.createElement("div")
     container.appendChild(dateDiv)
     container.appendChild(debitTable)
     container.appendChild(creditTable)
+    container.appendChild(summaryDiv)
+
+
 
     return container
 }
 
-function showData(n) {
+function showData(days) {
 
     const log = document.getElementById("log")
+    let last = new Date()
+    last.setDate(last.getDate() - 1)
 
-    getData(n).then(data => {
+    getData(days).then(data => {
         data.forEach(d => {
+
+            const date = d.timestamp.toDate()
+            const month = date.getMonth() + 1
+            const day = date.getDate() + 1
+
+            if (date.getDate() != last.getDate()) {
+                const dayContainer = document.createElement("div")
+                dayContainer.innerText = `${month}月${day}日`
+                dayContainer.classList.add("date")
+                log.appendChild(dayContainer)
+            }
 
             const container = createDataContainer(d)
             log.appendChild(container)
+
+            last = date
 
         })
     })
@@ -158,7 +176,7 @@ async function showTrialBalance(from, to) {
 }
 
 window.addEventListener("load", e => {
-    showData()
+    showData(3)
     setAccounts()
 })
 

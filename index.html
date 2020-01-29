@@ -36,7 +36,8 @@
   var db = firebase.firestore();
 
 </script>
-
+<div>
+<div id="log"></div>
 <div id="vue">
     <ul>
         <li v-for="(entry, index) in entries">
@@ -55,7 +56,7 @@
     <button @click.prevent="submit">SUBMIT</button>
 </div>
 <datalist id="accounts"></datalist>
-<div id="log"></div>
+</div>
 <div id="date">
 <form @submit.prevent="getTrialBalance">
     <input type="date" v-model="from">から<input type="date" v-model="to">までを<input type="submit" value="表示">
