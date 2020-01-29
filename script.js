@@ -97,11 +97,12 @@ function showData(days) {
 
             const date = d.timestamp.toDate()
             const month = date.getMonth() + 1
-            const day = date.getDate() + 1
+            const day = date.getDate()
+            const weekday = new Intl.DateTimeFormat("ja-JP", {weekday: "short"}).format(date)
 
             if (date.getDate() != last.getDate()) {
                 const dayContainer = document.createElement("div")
-                dayContainer.innerText = `${month}月${day}日`
+                dayContainer.innerText = `${month}月${day}日(${weekday})`
                 dayContainer.classList.add("date")
                 log.appendChild(dayContainer)
             }
