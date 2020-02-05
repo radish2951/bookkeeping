@@ -143,6 +143,68 @@ function smoothInput() {
     })
 }
 
+async function getBS(from, to) {
+
+    let bs = {}
+
+    const accounts = await getAccounts()
+
+    const titles = accounts.map(account => account.title)
+    const types = accounts.map(account => account.type)
+
+    return db.collection("transactions").orderBy("timestamp", "desc").startAt(to).endAt(from).get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+            doc.data().entries.forEach(e => {
+                const title = e.account
+                const type = types[titles.indexOf(title)]
+                if (type == "asset" || type == "liability") {
+                    bs[title] = bs[title] ? bs[title] + e.amount : e.amount
+                }
+            })
+        })
+    }).then(() => {
+        Object.entries(bs).forEach(e => {
+            const key = e[0]
+            const value = e[1]
+            if (value == 0) delete bs[key]
+        })
+    }).then(() => {
+        return bs
+    })
+}
+
+async function getPL(from, to) {
+
+    let pl = {}
+
+    const accounts = await getAccounts()
+
+    const titles = accounts.map(account => account.title)
+    const types = accounts.map(account => account.type)
+
+    return db.collection("transactions").orderBy("timestamp", "desc").startAt(to).endAt(from).get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+            doc.data().entries.forEach(e => {
+                const title = e.account
+                const type = types[titles.indexOf(title)]
+                if (type == "expense" || type == "revenue") {
+                    pl[title] = pl[title] ? pl[title] + e.amount : e.amount
+                }
+            })
+        })
+    }).then(() => {
+        Object.entries(pl).forEach(e => {
+            const key = e[0]
+            const value = e[1]
+            if (value == 0) delete pl[key]
+        })
+    }).then(() => {
+        return pl
+    })
+}
+
+
+
 async function getTrialBalance(from, to) {
     balance = {}
     return db.collection("transactions").orderBy("timestamp", "desc").startAt(to).endAt(from).get().then(querySnapshot => {
@@ -162,23 +224,9 @@ async function getTrialBalance(from, to) {
     })
 }
 
-async function showTrialBalance(from, to) {
-    const trialBalance = await getTrialBalance(from, to)
-    console.log(trialBalance)
-    const div = document.createElement("div")
-    Object.entries(trialBalance).forEach(e => {
-        const key = e[0]
-        const value = e[1]
-        const p = document.createElement("p")
-        p.innerText += key + ": " + value
-        div.appendChild(p)
-    })
-    document.body.appendChild(div)
-}
-
 window.addEventListener("load", e => {
-    showData(3)
     setAccounts()
+    showData(2)
 })
 
 new Vue({
@@ -186,19 +234,24 @@ new Vue({
     data: {
         from: '',
         to: '',
-        balance: {}
+        BS: {},
+        PL: {}
     },
     methods: {
-        getTrialBalance: async function() {
+        get: async function() {
             const from = new Date(this.from)
             const to = new Date(this.to)
             to.setDate(to.getDate() + 1)
-            this.balance = await getTrialBalance(from, to)
+            this.BS = await getBS(from, to)
+            this.PL = await getPL(from, to)
         }
     },
     computed: {
-        computedBalance: function() {
-            return Object.entries(this.balance)
+        computedBS: function() {
+            return Object.entries(this.BS)
+        },
+        computedPL: function() {
+            return Object.entries(this.PL)
         }
     },
     created: function() {
@@ -209,7 +262,7 @@ new Vue({
         to.setTime(to.getTime() - to.getTimezoneOffset() * 60 * 1000)
         this.from = from.toISOString().split("T")[0]
         this.to = to.toISOString().split("T")[0]
-        this.getTrialBalance()
+        this.get()
     }
 })
 

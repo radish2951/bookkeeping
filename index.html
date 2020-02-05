@@ -58,11 +58,18 @@
 <datalist id="accounts"></datalist>
 </div>
 <div id="date">
-<form @submit.prevent="getTrialBalance">
+<form @submit.prevent="get">
     <input type="date" v-model="from">から<input type="date" v-model="to">までを<input type="submit" value="表示">
 </form>
+<p>貸借対照表</p>
 <ul>
-    <li v-for="e in computedBalance">
+    <li v-for="e in computedBS">
+        <p>{{ e[0] }}: {{ e[1] }}</p>
+    </li>
+</ul>
+<p>損益計算書</p>
+<ul>
+    <li v-for="e in computedPL">
         <p>{{ e[0] }}: {{ e[1] }}</p>
     </li>
 </ul>
