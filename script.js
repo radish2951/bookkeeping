@@ -84,7 +84,7 @@ function createDataContainer(d) {
     return container
 }
 
-new Vue({
+const logVue = new Vue({
     el: '#log',
     data: {
         days: 5,
@@ -99,17 +99,24 @@ new Vue({
             date.setMilliseconds(0)
 
             return date
+        },
+        toString: function(date) {
+            return date.toLocaleDateString() + ` (${new Intl.DateTimeFormat("ja-JP", { weekday: "short" }).format(date)})`
+        },
+        toHTML: function(data) {
+            const container = createDataContainer(data)
+            return container.innerHTML
         }
     },
     created: async function() {
 
         /* initialize logs */
         for (let i = 0; i < this.days; i++) {
-            const today = new Date()
-            today.setDate(today.getDate() - i)
-            const text = today.toLocaleDateString() + `(${new Intl.DateTimeFormat("ja-JP", { weekday: "short" }).format(today)})`
+            const date = new Date()
+            date.setDate(date.getDate() - i)
+            // const text = today.toLocaleDateString() + `(${new Intl.DateTimeFormat("ja-JP", { weekday: "short" }).format(today)})`
             this.logsDaily.push({
-                date: text,
+                date: date,
                 details: []
             })
         }
@@ -127,8 +134,7 @@ new Vue({
 
             const diff = Math.round((now - date) / (1000 * 60 * 60 * 24))
 
-            const container = createDataContainer(d)
-            this.logsDaily[diff].details.push(container.innerHTML)
+            this.logsDaily[diff].details.push(d)
         })
 
     }
@@ -364,10 +370,10 @@ new Vue({
                 .then(docRef => {
                     alert("登録されました")
                     docRef.get().then(docSnapshot => {
+
                         const d = docSnapshot.data()
-                        const container = createDataContainer(d)
-                        const log = document.getElementById("log")
-                        log.insertBefore(container, log.firstChild)
+                        logVue.logsDaily[0].details.unshift(d)
+
                         this.entries = [{
                             debitAccount: '',
                             debitAmount: 0,
