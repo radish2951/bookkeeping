@@ -27,7 +27,14 @@ button {
 	width: 100%;
 }
 
-#log > div {
+#log ul, li {
+  display: block;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#log li li {
   font-size: 13px;
   display: flex;
   justify-content: space-between;
@@ -36,31 +43,31 @@ button {
   border-bottom: 1px solid gray;
 }
 
-#log > div.date {
-  justify-content: center;
+#log li div.date {
   padding-top: 28px;
   padding-bottom: 8px;
   font-size: 14px;
+  text-align: center;
 }
 
-#log div table {
+#log li li table {
   width: 41%;
 }
 
-#log div table tr td {
+#log li li table tr td {
   text-align: left;
   overflow-wrap: normal;
 }
 
-#log div table tr td:nth-child(2) {
+#log li li table tr td:nth-child(2) {
   text-align: right;
 }
 
-#log div div {
+#log li li div {
   margin-right: 20px;
 }
 
-#log div div.summary {
+#log li li div.summary {
   margin: 0 0 0 28px;
   width: 100%;
   font-size: 11px;

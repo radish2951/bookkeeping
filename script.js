@@ -81,40 +81,59 @@ function createDataContainer(d) {
     container.appendChild(creditTable)
     container.appendChild(summaryDiv)
 
-
-
     return container
 }
 
-function showData(days) {
+new Vue({
+    el: '#log',
+    data: {
+        days: 5,
+        logsDaily: []
+    },
 
-    const log = document.getElementById("log")
-    let last = new Date()
-    last.setDate(last.getDate() - 1)
+    methods: {
+        toZero: function(date) {
+            date.setHours(0)
+            date.setMinutes(0)
+            date.setSeconds(0)
+            date.setMilliseconds(0)
 
-    getData(days).then(data => {
+            return date
+        }
+    },
+    created: async function() {
+
+        /* initialize logs */
+        for (let i = 0; i < this.days; i++) {
+            const today = new Date()
+            today.setDate(today.getDate() - i)
+            const text = today.toLocaleDateString() + `(${new Intl.DateTimeFormat("ja-JP", { weekday: "short" }).format(today)})`
+            this.logsDaily.push({
+                date: text,
+                details: []
+            })
+        }
+
+        /* fetch data */
+        const data = await getData(this.days - 1)
+
         data.forEach(d => {
 
-            const date = d.timestamp.toDate()
-            const month = date.getMonth() + 1
-            const day = date.getDate()
-            const weekday = new Intl.DateTimeFormat("ja-JP", {weekday: "short"}).format(date)
+            let date = d.timestamp.toDate()
+            let now = new Date()
 
-            if (date.getDate() != last.getDate()) {
-                const dayContainer = document.createElement("div")
-                dayContainer.innerText = `${month}月${day}日(${weekday})`
-                dayContainer.classList.add("date")
-                log.appendChild(dayContainer)
-            }
+            date = this.toZero(date)
+            now = this.toZero(now)
+
+            const diff = Math.round((now - date) / (1000 * 60 * 60 * 24))
 
             const container = createDataContainer(d)
-            log.appendChild(container)
-
-            last = date
-
+            this.logsDaily[diff].details.push(container.innerHTML)
         })
-    })
-}
+
+    }
+})
+
 
 function smoothInput() {
 
@@ -226,7 +245,6 @@ async function getTrialBalance(from, to) {
 
 window.addEventListener("load", e => {
     setAccounts()
-    showData(2)
 })
 
 new Vue({

@@ -37,7 +37,18 @@
 
 </script>
 <div>
-<div id="log"></div>
+
+<div id="log">
+    <ul>
+        <li v-for="logs in logsDaily">
+            <div class="date">{{ logs.date }}</div>
+            <ul>
+                <li v-for="d in logs.details" v-html="d"></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
 <div id="vue">
     <ul>
         <li v-for="(entry, index) in entries">
