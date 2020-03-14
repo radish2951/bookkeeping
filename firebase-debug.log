@@ -1,0 +1,25 @@
+[debug] [2020-03-14T08:21:01.200Z] ----------------------------------------------------------------------
+[debug] [2020-03-14T08:21:01.201Z] Command:       /usr/local/bin/node /usr/local/bin/firebase serve
+[debug] [2020-03-14T08:21:01.202Z] CLI Version:   7.15.0
+[debug] [2020-03-14T08:21:01.202Z] Platform:      linux
+[debug] [2020-03-14T08:21:01.202Z] Node Version:  v12.15.0
+[debug] [2020-03-14T08:21:01.202Z] Time:          Sat Mar 14 2020 17:21:01 GMT+0900 (Japan Standard Time)
+[debug] [2020-03-14T08:21:01.202Z] ----------------------------------------------------------------------
+[debug] [2020-03-14T08:21:01.202Z] 
+[debug] [2020-03-14T08:21:01.208Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-03-14T08:21:01.208Z] > authorizing via signed-in user
+[debug] [2020-03-14T08:21:01.208Z] [iam] checking project bookkeeping-4796d for permissions ["firebase.projects.get"]
+[debug] [2020-03-14T08:21:01.209Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/bookkeeping-4796d:testIamPermissions  
+
+[debug] [2020-03-14T08:21:02.027Z] <<< HTTP RESPONSE 200
+[debug] [2020-03-14T08:21:02.047Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/bookkeeping-4796d  
+ 
+[debug] [2020-03-14T08:21:02.528Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from '/home/tetrachandaz1000/bookkeeping-firebase'...
+[info] 
+[debug] [2020-03-14T08:21:02.545Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/bookkeeping-4796d/webApps/-/config  
+ 
+[debug] [2020-03-14T08:21:03.962Z] <<< HTTP RESPONSE 200
+[info] i  hosting: Serving hosting files from: public
+[info] ✔  hosting: Local server: http://localhost:5000
