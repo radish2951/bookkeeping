@@ -1,10 +1,9 @@
 async function getData(from, to) {
 
     const now = new Date()
-    if (from > 0) {
-        now.setHours(0, 0, 0, 0)
-        now.setDate(now.getDate() - from + 1)
-    }
+    now.setHours(0, 0, 0, 0)
+    now.setDate(now.getDate() - from + 1)
+
     const past = new Date()
     past.setHours(0, 0, 0, 0)
     past.setDate(past.getDate() - to)
@@ -13,6 +12,14 @@ async function getData(from, to) {
     return querySnapshot.docs.map(doc => doc.data())
 
 }
+
+async function getTransactions(fromDate, toDate) {
+
+    const querySnapshot = await db.collection("transactions").orderBy("timestamp", "desc").startAt(toDate).endAt(fromDate).get()
+    return querySnapshot.docs.map(doc => doc.data())
+
+}
+
 
 function createDataContainer(d) {
 
@@ -145,6 +152,31 @@ async function getBS(from, to) {
     })
 }
 
+async function getBSNow() {
+
+    const bs = {}
+
+    const accounts = await getAccounts()
+
+    const titles = accounts.map(account => account.title)
+    const types = accounts.map(account => account.type)
+
+    const doc = await db.collection("bs").doc("bs").get()
+
+    const data = doc.data()
+    Object.keys(data).filter(title => {
+        const type = types[titles.indexOf(title)]
+        return type == "asset" || type == "liability"
+    }).forEach(title => {
+        if (data[title] != 0) {
+            bs[title] = data[title]
+        }
+    })
+
+    return bs
+}
+
+
 async function getPL(from, to) {
 
     let pl = {}
@@ -188,7 +220,8 @@ new Vue({
             const from = new Date(this.from)
             const to = new Date(this.to)
             to.setDate(to.getDate() + 1)
-            this.BS = await getBS(from, to)
+            // this.BS = await getBS(from, to)
+            this.BS = await getBSNow()
             this.PL = await getPL(from, to)
         }
     },
@@ -290,11 +323,11 @@ new Vue({
 
             db.collection("transactions").add(data)
                 .then(docRef => {
-                    update() // Update BS with data till yesterday
                     alert("登録されました")
                     docRef.get().then(docSnapshot => {
 
                         const d = docSnapshot.data()
+                        updateBS(d)
                         logVue.logsDaily[0].details.unshift(d)
 
                         this.entries = [{
